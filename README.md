@@ -1,25 +1,56 @@
+<div align="center">
+
 # repo2demo
 
-**Cut through the AI hype: check every new skill, agent or tool on GitHub against *you*, before you adopt it.**
+### Is this AI repo worth *your* time? Find out before you install it.
+
+Paste a GitHub link. Claude reads the repo against **your** profile, gives a verdict with evidence,<br>
+and makes a 30-second demo video, including a short example of how you would actually use it.
+
+<img src="docs/demo-example.gif" width="720" alt="The example scene of a repo2demo video: a terminal types the install commands, the steps tick by and the result appears, labelled 'Illustrative example'">
+
+**[▶ Watch a full example video (39 s)](docs/demo.mp4)** · [Contact sheet](docs/demo-sheet.jpg)
+
+</div>
+
+---
+
+## Why
 
 Every week brings a flood of new AI repos: agent frameworks, Claude Code skills and plugins, MCP servers, "10x"
-tools. Most READMEs promise a lot, and few tell you whether the repo fits *your* work, *your* constraints and *your*
-team. repo2demo answers that question per repo, so you can pick skills and agents deliberately and only adopt the
-ones that pay off.
+tools. The READMEs all promise a lot. Very few tell you the only thing that matters:
 
-Paste a GitHub URL. repo2demo:
+> **Does this fit what *I* build, the way *I* work, the data *I'm* allowed to use, and the machines *I* have?**
 
-1. **Clones it safely** (shallow, agent config stripped, nothing installed or run).
-2. **Has Claude judge the fit** against a profile you write once (`config/profile.local.md`): your role, what you
-   build, how you present it, where sensitive data may go, your machines and license rules.
-3. **Gives a verdict** (use / try / watch / skip) with a fit score, a short summary, concrete uses (for you, your team,
-   the people you build for, or your presentations), work vs home fit, sensitive-data fit, setup, risks, and evidence
-   with file names.
-4. **Makes a 30-40 second demo video** with [motlab](https://github.com/staryone/motlab), including a short
-   illustrative example of one practical use. A "skip" gets no video, only a clear explanation why.
-5. **Keeps a library** of everything you checked, so you can compare, revisit, re-run or delete.
+Starring everything and trying a few at random does not scale. repo2demo turns each repo into a short, honest answer
+written for you, so you can pick skills and agents deliberately, and only adopt the ones that pay off.
 
-It runs on your own Claude subscription, through the Claude Code CLI that is signed in on your machine.
+## What you get for every repo
+
+| | |
+|---|---|
+| **A verdict** | `use` · `try` · `watch` · `skip`, with a fit score out of 10 and a 2-3 sentence summary |
+| **Concrete uses** | What it would do for you, your team, the people you build for, or your presentations, each tagged with effort and whether it is OK for sensitive data |
+| **An example** | One practical use, in steps: what you type, what happens, what comes out. Built from the repo's docs, never by running it |
+| **Can you use it?** | Work vs home, sensitive vs non-sensitive data, licence and install constraints |
+| **Risks and evidence** | What to watch out for, and every key claim linked to the file it came from |
+| **A demo video** | 30-40 s, 1080p, one clean style for every repo, with the example animated. A `skip` gets no video, just a clear "why not" |
+| **A library** | Everything you checked, searchable and filterable by verdict. Re-run or delete any of it |
+
+<p align="center"><img src="docs/ui.png" width="900" alt="The repo2demo app: a URL field, the latest verdicts on the right, and a wave showing how long each pipeline step took"></p>
+
+## The profile is the point
+
+repo2demo judges every repo against one file you write once: `config/profile.local.md` (git-ignored, it never leaves
+your machine). Start from [`config/profile.example.md`](config/profile.example.md):
+
+- **Role:** what you build, for whom, whether you lead a team, how you present your work.
+- **Data sensitivity:** where sensitive data may go (approved platforms only) and where anything goes.
+- **Stack:** the tools, agents and skills you already use, so duplicates get a `skip`.
+- **Constraints:** locked-down machines, licence rules, operating system.
+- **What "useful" means:** time saved, a new capability, a reusable pattern, something easier to show.
+
+The more concrete the profile, the sharper the verdicts.
 
 ## Quick start
 
@@ -36,37 +67,14 @@ Or from the command line:
 node bin/repo2demo.mjs https://github.com/owner/repo
 ```
 
-A repo that was already checked is not run again unless you pass `--force` (the UI asks: open it or run again).
+It runs on your own Claude subscription, through the Claude Code CLI signed in on your machine. A report alone takes
+about a minute; with the video, about 10.
 
-## The profile is the point
-
-The verdicts are only as good as `config/profile.local.md` (git-ignored, so it stays on your machine). Start from
-`config/profile.example.md` and fill in:
-
-- **Role:** what you build and for whom; whether you lead a team; how you present your work.
-- **Data sensitivity:** which platforms are allowed for sensitive data and which for everything else.
-- **Stack:** the tools, agents and skills you already use (so duplicates get a "skip").
-- **Constraints:** locked-down machines, license rules, OS.
-- **What "useful" means:** time saved, new capability, reusable pattern, easier to show.
-
-## What you get per repo
-
-Output lands in `runs/<owner>__<repo>/` and in the UI's Library:
-
-| File | What |
-|---|---|
-| `report.md` | Verdict, fit score, summary, uses (with who benefits and data fit), illustrative example, work/home fit, setup, risks, evidence |
-| `demo.mp4` | 30-40 s, 1080p, silent, one clean style across all videos (none for a "skip") |
-| `demo-sheet.jpg` | One frame per second on one sheet, for a quick look |
-| `analysis.json` | The raw structured answer from Claude |
-| `video/` | The motlab project: `motlab edit "<path>"` opens it in the viewer to leave notes or export 4K |
-| `repo/` | The shallow clone (agent config removed) |
-
-## Options
+### Options
 
 ```
 --lang he        report and video text in Hebrew (RTL)
---no-video       report only (about 1 minute)
+--no-video       report only
 --4k             render 3840x2160
 --model <alias>  e.g. opus, sonnet (default: your Claude Code default)
 --force          run again even if this repo was already checked
@@ -74,34 +82,49 @@ Output lands in `runs/<owner>__<repo>/` and in the UI's Library:
 
 ## How it works
 
-1. **Clone**: `git clone --depth 1`, no tags, no submodules, no LFS. Then `.claude/`, `.cursor/`, `.mcp.json` and
-   `.cursorrules` are deleted and `CLAUDE.md` / `AGENTS.md` are renamed to `*.repo.txt`, because a headless Claude run
-   would load them without asking. The repo's own code is never installed or run. AVIF/SVG images get a still PNG.
-2. **Analyse**: `claude -p` with only `Read, Glob, Grep`, no MCP servers, no user hooks, and a JSON schema for the
-   answer. Text inside the repo is treated as data, not instructions. Image paths the model returns are checked against
-   the real candidates.
-3. **Brief**: the video text, the example and the images come only from the analysis and the repo; `style/*.md` sets the
-   look.
-4. **Build**: a second `claude -p` run reads the motlab skill + `style/` + `brief.md`, writes the scenes and checks its
-   own stills. It may only run motlab stills, `python` and `ffprobe`; it cannot render or touch other folders.
-5. **Render**: `motlab render`, or, where an organisation turns off Chrome remote debugging
-   (`RemoteDebuggingAllowed = 0`), an ordinary Chrome window that draws and encodes each scene with WebCodecs in the
-   page and hands the bytes to a local server (`src/browser-render.mjs`). No remote debugging is used.
-6. **QA**: ffprobe for size and length, ffmpeg `signalstats` counts sudden brightness jumps (flashes), and a contact
-   sheet.
+```
+GitHub URL
+  → shallow clone, agent config stripped, nothing installed or run
+  → Claude (read-only: Read, Glob, Grep) judges it against your profile → structured JSON
+  → report.md  +  video brief (exact text, the example, real images from the repo)
+  → Claude builds the motlab scenes and checks its own stills
+  → render to MP4  → automatic check (length, size, flashes)  → your library
+```
 
-## Make it yours
+- **Safe by default.** The clone is shallow (no tags, submodules or LFS). `.claude/`, `.cursor/`, `.mcp.json` and
+  `.cursorrules` are deleted and `CLAUDE.md` / `AGENTS.md` are renamed, because a headless Claude run would load them
+  without asking. Text inside the repo is treated as data, not instructions.
+- **Locked contracts.** The analysis runs with only read tools, no MCP servers and no user hooks, and must return JSON
+  that matches a schema. Image paths it returns are checked against the real files.
+- **Video as code.** Scenes are written for [motlab](https://github.com/staryone/motlab) and follow the style in
+  [`style/`](style/). Change those three files once and every video follows.
+- **Works on locked-down PCs.** Where an organisation turns off Chrome remote debugging, motlab's headless renderer
+  cannot run. repo2demo then renders in an ordinary Chrome window instead: each scene is drawn and encoded with
+  WebCodecs inside the page and handed to a local server ([`src/browser-render.mjs`](src/browser-render.mjs)). No
+  remote debugging is used.
 
-- `config/profile.local.md`: who the repos are judged for.
-- `style/brand.md`, `style/pacing.md`, `style/captions.md`: the series look. Change once, every video follows.
+## What lands on disk
+
+`runs/<owner>__<repo>/` (git-ignored):
+
+| File | What |
+|---|---|
+| `report.md` | The full report |
+| `demo.mp4` | The video (none for a `skip`) |
+| `demo-sheet.jpg` | One frame per second, for a quick look |
+| `analysis.json` | The raw structured answer |
+| `video/` | The motlab project: `motlab edit "<path>"` opens it in the viewer to tweak or export 4K |
+| `repo/` | The sanitized clone |
 
 ## Requirements
 
 Node 24+, Git, Google Chrome, ffmpeg/ffprobe on PATH, Python 3 with Pillow/numpy/scipy, the Claude Code CLI signed in,
-and motlab: `npm install -g @motlab/cli && npx @motlab/cli setup`.
+and motlab (`npm install -g @motlab/cli && npx @motlab/cli setup`).
 
 ## Notes
 
 - A personal Claude subscription covers your own use. If other people use this app, it needs an API key instead.
 - Analysis sends the repo's text to Claude: use it on public repos, not on internal code.
 - The UI server listens on 127.0.0.1 only and rejects requests from other sites.
+- The example video above reviews [kuratlielia/arc-library](https://github.com/kuratlielia/arc-library) (MIT); its
+  images come from that repo. It is an independent overview, not affiliated with the author.
