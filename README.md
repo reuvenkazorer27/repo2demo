@@ -25,6 +25,16 @@ tools. The READMEs all promise a lot. Very few tell you the only thing that matt
 Starring everything and trying a few at random does not scale. repo2demo turns each repo into a short, honest answer
 written for you, so you can pick skills and agents deliberately, and only adopt the ones that pay off.
 
+## Where the idea came from
+
+It started with a collection site: one place where strong repos from all kinds of sources get gathered, so you can go
+through them later, in your own time. The collection kept growing faster than anyone could actually try things, and
+"later" became a long list of links nobody opened.
+
+repo2demo is the missing second half of that workflow. Collect freely; then, when you have time, run each link through
+repo2demo and get a verdict, an example and a 30-second video, instead of a tab you never come back to. The library
+keeps the result, so the pile turns into decisions: what to adopt, what to watch, and what to drop.
+
 ## What you get for every repo
 
 | | |
