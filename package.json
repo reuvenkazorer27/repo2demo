@@ -1,0 +1,12 @@
+{
+  "name": "repo2demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Paste a GitHub URL: clone it safely, let Claude judge how it fits you, and render a short clean demo video with motlab.",
+  "type": "module",
+  "bin": { "repo2demo": "bin/repo2demo.mjs" },
+  "scripts": {
+    "start": "node bin/repo2demo.mjs"
+  },
+  "engines": { "node": ">=24" }
+}
